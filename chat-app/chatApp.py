@@ -105,16 +105,7 @@ def logout():
 def chat(room):
   if 'username' in session:
     if request.method == 'POST':
-      message = request.form['message']
-
-      if message:
-        with open(f'rooms/{room}.csv', 'a', newline='') as f:
-          writer = csv.writer(f)
-          writer.writerow([datetime.datetime.utcnow(), session['username'], message])
-
         return render_template('chat.html', room=room, messages=get_messages(room))
-      else:
-        return 'Please provide a message'
     else:
       messages = get_messages(room)
       return render_template('chat.html', room=room, messages=messages)
@@ -124,20 +115,24 @@ def chat(room):
 #endregion
 
 #region update_content (This function handles the API for getting chat message)
-@app.route('/api/chat/<room>', methods=["GET"])
-def getMessages(room):
-  messages = []
-  with open(f'rooms/{room}.csv', 'r', newline='') as f:
-    reader = csv.reader(f)
-    for row in reader:
-      messages.append({
-        "date": row[0],
-        "username": row[1],
-        "message": row[2],
-      })
-  return jsonify(messages)
+@app.route('/api/chat/<room>', methods=["GET","POST"])
+def get_messages(room):
+  if request.method == "POST":
+     f_path = "rooms/{}.txt".format(room)
+     msg = request.form['msg']
+     username = session['username']
+     date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+     with open(f_path, 'a') as f:
+        f.write(f'[{date}] {username}: {msg}\n')
+  else:
+     with open(f_path, 'r') as f:
+      f.seek(0)
+      chat_messages = f.read()
+      return chat_messages
 #endregion
-
     
+
+
+
 if __name__ == '__main__':
   app.run(host="0.0.0.0",debug=True)
