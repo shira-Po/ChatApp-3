@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 app.secret_key="secret_key"
 
-room_files_path = os.getenv('ROOM_FILES_PATH')
+room_files_path=os.getenv('ROOM_FILES_PATH')
 
 #region helper functions
 
@@ -103,36 +103,35 @@ def logout():
 #region chat ( This function handles the chat page)
 @app.route('/chat/<room>', methods=['GET', 'POST'])
 def chat(room):
-  if 'username' in session:
-    if request.method == 'POST':
-        return render_template('chat.html', room=room, messages=get_messages(room))
-    else:
-      messages = get_messages(room)
-      return render_template('chat.html', room=room, messages=messages)
-  else:
-    return redirect('/login')
+  return render_template('chat.html', room=room)
 
 #endregion
 
 #region update_content (This function handles the API for getting chat message)
-@app.route('/api/chat/<room>', methods=["GET","POST"])
-def get_messages(room):
-  if request.method == "POST":
-     f_path = "rooms/{}.txt".format(room)
-     msg = request.form['msg']
-     username = session['username']
-     date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-     with open(f_path, 'a') as f:
-        f.write(f'[{date}] {username}: {msg}\n')
-  else:
-     with open(f_path, 'r') as f:
-      f.seek(0)
-      chat_messages = f.read()
-      return chat_messages
+@app.route('/api/chat/<room>', methods=['GET','POST'])
+def updateChat(room):
+    if not session.get("username"):
+        return redirect("/")
+    print("add msg")
+    # filename = "./rooms/"+room+".txt"
+    filename = room_files_path+room+".txt"
+
+    if request.method == 'POST':
+        msg = request.form['msg']
+        if "username" in session:
+            # Get the current date and time
+            current_datetime = datetime.datetime.now()
+            # Format the date and time as a string
+            formatted_datetime = current_datetime.strftime("[%Y-%m-%d %H:%M:%S]")
+            with open(filename,"a") as file:
+              file.write("\n"+formatted_datetime+"   "+session.get('username')+": "+msg)
+              
+    with open(filename,"r") as file:
+        room_data = file.read()
+        return room_data
+
 #endregion
+
     
-
-
-
 if __name__ == '__main__':
   app.run(host="0.0.0.0",debug=True)

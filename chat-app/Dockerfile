@@ -11,5 +11,7 @@ COPY . .
 # command to run on container start
 CMD [ "python", "./chatApp.py" ]
 #ENV
-ENV room_files_path = "rooms/"
+ENV ROOM_FILES_PATH="./rooms/"
+#FLASK_ENV
+ENV FLASK_ENV development
 
