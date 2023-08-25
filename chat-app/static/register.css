@@ -49,7 +49,8 @@ body {
     color: #ffffff;
 }
 
-.login-box button {
+.login-box a {
+    display: inline-block;
     margin-top: 20px; /* Reduce the margin for closer positioning */
     width: 100%;
     background-color: #ffffff;
@@ -59,8 +60,56 @@ body {
     font-weight: 600;
     border-radius: 5px;
     cursor: pointer;
+    text-decoration: none; /* Remove underlines from links */
+    position: relative; /* Position for the animation */
+    overflow: hidden; /* Hide extra text */
 }
 
+.login-box a span {
+    position: absolute;
+    display: block;
+}
+
+.login-box a span:nth-child(1) {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffffff);
+    animation: animate1 1s linear infinite;
+}
+
+.login-box a span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #ffffff);
+    animation: animate2 1s linear infinite;
+    animation-delay: 0.25s; /* Delay for animation */
+}
+
+.login-box a span:nth-child(3) {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #ffffff);
+    animation: animate3 1s linear infinite;
+    animation-delay: 0.5s; /* Delay for animation */
+}
+
+.login-box a span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(0deg, transparent, #ffffff);
+    animation: animate4 1s linear infinite;
+    animation-delay: 0.75s; /* Delay for animation */
+}
+
+/* New styling for submit button */
 .login-box .submit-container {
     display: flex;
     justify-content: center;
@@ -78,31 +127,4 @@ body {
     font-size: 14px;
     font-weight: 300;
     color: #ffffff;
-}
-
-.social {
-    margin-top: 20px; /* Reduce the margin for closer positioning */
-    display: flex;
-}
-
-.social div {
-    background: red;
-    width: 150px;
-    border-radius: 3px;
-    padding: 5px 10px 10px 5px;
-    background-color: rgba(255, 255, 255, 0.27);
-    color: #eaf0fb;
-    text-align: center;
-}
-
-.social div:hover {
-    background-color: rgba(255, 255, 255, 0.47);
-}
-
-.social div.fb {
-    margin-left: 25px;
-}
-
-.social i {
-    margin-right: 4px;
 }
