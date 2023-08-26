@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, render_template, request, redirect, session, jsonify
+from flask import Flask, render_template, request, redirect, session, jsonify, flash
 import csv
 import os
 import base64
@@ -49,6 +49,11 @@ def register():
         if check_user_registration(username, userpass,"register"):
           return redirect("/login")
 
+        # Check if password is strong
+        if not is_password_strong(userpass):
+            flash("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.")
+            return render_template("register.html")
+        
         # Open the CSV file in read mode
         with open('users.csv', 'a',newline='') as file:
           writer=csv.writer(file)
@@ -56,7 +61,30 @@ def register():
         return redirect("/login")
         
     return render_template("register.html")
-  
+
+def is_password_strong(password):
+    # Check if password is at least 8 characters long
+    if len(password) < 8:
+        return False
+
+    # Check if password contains at least one uppercase letter
+    if not any(c.isupper() for c in password):
+        return False
+
+    # Check if password contains at least one lowercase letter
+    if not any(c.islower() for c in password):
+        return False
+
+    # Check if password contains at least one number
+    if not any(c.isdigit() for c in password):
+        return False
+
+    # Check if password contains at least one special character
+    if not any(c.isalnum() for c in password):
+        return False
+
+    return True
+
 #endregion
   
 #region login
@@ -69,7 +97,8 @@ def login():
             session['username'] = username
             return redirect('/lobby')
         else:
-            return "Invalid credentials"
+            flash("Invalid credentials")
+            return render_template('login.html')
    return render_template('login.html')
 #endregion
 
