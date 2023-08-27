@@ -1,77 +1,78 @@
 /* chat.css */
-
 body {
+  font-family: Arial, sans-serif;
   background-color: #080710;
+  margin: 0;
+  padding: 0;
+  color: #ffffff;
 }
 
-.chat-room {
-  width: 800px;
-  height: 600px;
-  margin: 0 auto;
-  border-radius: 10px;
-  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-}
-
-.chat-header {
-  background-color: #ffffff;
-  padding: 20px;
-  border-bottom: 1px solid #eaf0fb;
-}
-
-.chat-header h2 {
-  font-size: 32px;
-  font-weight: 500;
-  line-height: 42px;
+h1 {
   text-align: center;
-  color: #080710;
-}
-
-.chat-messages {
-  height: 400px;
-  overflow-y: scroll;
-}
-
-.chat-message {
-  border-bottom: 1px solid #eaf0fb;
-  padding: 10px 20px;
-}
-
-.chat-message .username {
-  font-size: 14px;
-  font-weight: 600;
-  color: #080710;
-}
-
-.chat-message .message {
-  font-size: 14px;
+  margin: 20px 0;
   color: #ffffff;
 }
 
-.chat-form {
-  padding: 20px;
-}
-
-.chat-form input {
-  height: 40px;
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.07);
-  border-radius: 3px;
-  padding: 0 10px;
-  margin-top: 8px;
-  font-size: 14px;
-  font-weight: 300;
-  color: #ffffff;
-}
-
-.chat-form button {
-  margin-top: 20px;
-  width: 100%;
-  background-color: #ffffff;
-  color: #080710;
-  padding: 15px 0;
-  font-size: 18px;
-  font-weight: 600;
+form {
+  text-align: center;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid #f8f8f8;
   border-radius: 5px;
-  cursor: pointer;
+  width: 80%;
+  max-width: 600px;
 }
 
+form input[type="text"]{
+  width: 75%;
+  padding: 10px;
+  margin: 5px 5px;
+  border: 1px solid #f8fbff;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+form input[type="button"] {
+  width: 20%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #f8fbff;
+  border-radius: 3px;
+  background-color: #ffffff;
+  color: #007bff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+form input[type="button"]:hover {
+  background-color: #f8f8f8;
+  color: #004eaa;
+}
+
+#chatbox {
+  text-align: center;
+  margin: 20px auto; /* Increased margin */
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid #f8f8f8;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 600px;
+  height: 300px;
+  overflow: auto;
+  color: #ffffff;
+}
+
+a {
+  display: block;
+  text-align: center;
+  margin-top: 10px; /* Reduced the margin */
+  margin-bottom: 5px; /* Added margin to separate from text below */
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
