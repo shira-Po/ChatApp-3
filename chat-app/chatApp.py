@@ -37,27 +37,6 @@ def decode_password(encoded_password):
     return decoded_bytes.decode('utf-8')
 #endregion
 
-#region register
-@app.route('/', methods=['GET','POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        userpass = request.form['password']
-        encoded_pass=encode_password(userpass)
-        
-        #Check if the user already exists
-        if check_user_registration(username, userpass,"register"):
-          return redirect("/login")
-        # Open the CSV file in read mode
-        with open('users.csv', 'a',newline='') as file:
-          writer=csv.writer(file)
-          writer.writerow([username,encoded_pass])
-        return redirect("/login")
-        
-    return render_template("register.html")
-
-#endregion
-  
 #region login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -73,17 +52,79 @@ def login():
 
 #endregion
 
+#region register
+@app.route('/', methods=['GET','POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        userpass = request.form['password']
+        encoded_pass=encode_password(userpass)
+        
+        #Check if the user already exists
+        if check_user_registration(username, userpass,"register"):
+          return redirect("/login")
+
+         # Check if username is valid
+        if not valid_username(username):
+            return "Username must be at least 5 characters"
+        
+        # Check if password is strong
+        if not is_password_strong(userpass):
+            return "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+        
+        # Open the CSV file in read mode
+        with open('users.csv', 'a',newline='') as file:
+          writer=csv.writer(file)
+          writer.writerow([username,encoded_pass])
+        return redirect("/login")
+        
+    return render_template("register.html")
+
+def valid_username(username):
+    # Check if username is at least 5 characters long
+    if len(username) < 5:
+        return False
+    return True
+    
+
+def is_password_strong(password):
+    # Check if password is at least 8 characters long
+    if len(password) < 8:
+        return False
+
+    # Check if password contains at least one uppercase letter
+    if not any(c.isupper() for c in password):
+        return False
+
+    # Check if password contains at least one lowercase letter
+    if not any(c.islower() for c in password):
+        return False
+
+    # Check if password contains at least one number
+    if not any(c.isdigit() for c in password):
+        return False
+
+    return True
+
+#endregion
+
 #region lobby
 @app.route('/lobby', methods=['GET', 'POST'])
 def lobby():
     if 'username' in session:
         if request.method == 'POST':
             room_name = request.form['new_room']
-            try:
-                with open(f'rooms/{room_name}.txt', 'x') as f:
-                    f.write('Welcome! \n')
-            except FileNotFoundError:
-                print("The given room name already exists")
+            rooms = os.listdir('rooms/')
+            new_rooms = [x[:-4] for x in rooms]
+            # Check if room name already exists
+            if room_name in new_rooms:
+                return "The given room name already exists"
+            else:
+                try:
+                    with open(f'rooms/{room_name}.txt', 'x') as f:
+                        f.write('Welcome! \n')
+                except FileNotFoundError:
+                    return "The given room name already exists"
             print("CREATED NEW ROOM NAMED: " + room_name )
         rooms = os.listdir('rooms/')
         new_rooms = [x[:-4] for x in rooms]
