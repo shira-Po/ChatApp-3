@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, render_template, request, redirect, session, jsonify
+from flask import Flask, render_template, request, redirect, session, jsonify, flash
 import csv
 import os
 import base64
@@ -48,7 +48,6 @@ def register():
         #Check if the user already exists
         if check_user_registration(username, userpass,"register"):
           return redirect("/login")
-
         # Open the CSV file in read mode
         with open('users.csv', 'a',newline='') as file:
           writer=csv.writer(file)
@@ -56,7 +55,7 @@ def register():
         return redirect("/login")
         
     return render_template("register.html")
-  
+
 #endregion
   
 #region login
@@ -71,6 +70,7 @@ def login():
         else:
             return "Invalid credentials"
    return render_template('login.html')
+
 #endregion
 
 #region lobby
