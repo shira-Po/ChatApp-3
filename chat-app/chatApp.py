@@ -10,11 +10,14 @@ app.secret_key="secret_key"
 
 room_files_path=os.getenv('ROOM_FILES_PATH')
 
+csv_path=os.getenv('CSV_PATH')
+
+
 #region helper functions
 
 #used in register and in login functions
 def check_user_registration(username, password,callFunction):
-    with open('users.csv', 'r', newline='') as file:
+    with open(csv_path, 'r', newline='') as file:
         reader = csv.reader(file)
         if callFunction=="login":
           for row in reader:
@@ -73,7 +76,7 @@ def register():
             return "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
         
         # Open the CSV file in read mode
-        with open('users.csv', 'a',newline='') as file:
+        with open(csv_path, 'a',newline='') as file:
           writer=csv.writer(file)
           writer.writerow([username,encoded_pass])
         return redirect("/login")

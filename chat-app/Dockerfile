@@ -19,6 +19,8 @@ COPY . .
 CMD [ "python", "./chatApp.py" ]
 #ENV
 ENV ROOM_FILES_PATH="./rooms/"
-#FLASK_ENV
+ENV CSV_PATH users.csv
 ENV FLASK_ENV development
+
+
 
