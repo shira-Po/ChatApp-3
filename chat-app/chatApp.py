@@ -157,7 +157,6 @@ def updateChat(room):
     if not session.get("username"):
         return redirect("/")
     print("add msg")
-    # filename = "./rooms/"+room+".txt"
     filename = room_files_path+room+".txt"
 
     if request.method == 'POST':
@@ -176,6 +175,13 @@ def updateChat(room):
 
 #endregion
 
-    
+
+#region health check
+@app.route("/health")
+def health():
+    return "OK", 200
+#endregion
+
+
 if __name__ == '__main__':
   app.run(host="0.0.0.0",debug=True)

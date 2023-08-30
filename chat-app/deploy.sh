@@ -13,13 +13,34 @@ commit_hash=$2
 # Build the Docker image
 docker build -t my-chatapp:${version} .
 
-# Tag the Docker image with the commit hash
-docker tag my-chatapp:${version} my-chatapp:${commit_hash}
-
+# Check if the Docker build was successful
+if [ $? -ne 0 ]; then
+  echo "Docker build failed"
+  exit 1
+fi
 
 # Push the Docker image to GitHub Container Registry
 echo "Pushing Docker image to GitHub Container Registry..."
 docker push my-chatapp:${version}
-docker push my-chatapp:${commit_hash}
+
+# Tag the Docker image with the commit hash
+docker tag my-chatapp:${version} my-chatapp:${commit_hash}
+
+
+# Check if the Docker push was successful
+if [ $? -ne 0 ]; then
+  echo "Docker push failed"
+  exit 1
+fi
+
+# Push to GitHub
+git tag ${version}
+git push origin ${version}
+
+# Check if the Git push was successful
+if [ $? -ne 0 ]; then
+  echo "Git push failed"
+  exit 1
+fi
 
 echo "Done!"
