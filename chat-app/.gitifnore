@@ -1,0 +1,19 @@
+# .gitignore
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Logs
+*.log
+.0
+
+
+# Compiled files from build process
+build/
+dist/
+
+# Ignore compiled files or directories
+large.dockerfile
+mid.dockerfile
+thin.dockerfile
