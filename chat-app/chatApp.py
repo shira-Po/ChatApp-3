@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, render_template, request, redirect, session, jsonify, flash
+from flask import Flask, render_template, request, redirect, session, jsonify, flash, url_for
 import csv
 import os
 import base64
@@ -182,18 +182,34 @@ def health():
     return "OK", 200
 #endregion
 
-
 #region delete messages
 @app.route('/chat/<room>/clear', methods=['GET', 'POST'])
 def clear_messages(room):
-  """Clears all messages in the current room."""
+  """Clears all messages in the current room, except for the messages of the current user."""
+  return "hhhh"
   if not session.get("username"):
-    return redirect("/")
+        return redirect("/")
   filename = room_files_path + room + ".txt"
-  with open(filename, "w") as f:
-     f.write("")
+  with open(filename, "r") as f:
+    messages = f.read().splitlines()
   f.close()
-  return render_template('chat.html', room=room)
+
+  # Get the current user ID.
+  user_id = session['username']
+
+  # Delete all messages from the current user.
+  for message in messages:
+    if message.split(':')[0] == user_id:
+      messages.remove(message)
+  
+  # Empty the file.
+  os.remove(filename)
+  # Write the updated messages to the file.
+  with open(filename, "w") as f:
+    f.write("\n".join(messages))
+  f.close()
+  return "succeed"
+
 #endregion
 
 if __name__ == '__main__':
