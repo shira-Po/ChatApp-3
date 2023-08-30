@@ -183,5 +183,18 @@ def health():
 #endregion
 
 
+#region delete messages
+@app.route('/chat/<room>/clear', methods=['GET', 'POST'])
+def clear_messages(room):
+  """Clears all messages in the current room."""
+  if not session.get("username"):
+    return redirect("/")
+  filename = room_files_path + room + ".txt"
+  with open(filename, "w") as f:
+     f.write("")
+  f.close()
+  return render_template('chat.html', room=room)
+#endregion
+
 if __name__ == '__main__':
   app.run(host="0.0.0.0",debug=True)
