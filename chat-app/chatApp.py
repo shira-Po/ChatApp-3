@@ -167,14 +167,13 @@ def updateChat(room):
             # Format the date and time as a string
             formatted_datetime = current_datetime.strftime("[%Y-%m-%d %H:%M:%S]")
             with open(filename,"a") as file:
-              file.write("\n"+formatted_datetime+"   "+session.get('username')+": "+msg)
+              file.write("\n"+session.get('username')+": "+msg + " " + formatted_datetime)
               
     with open(filename,"r") as file:
         room_data = file.read()
         return room_data
 
 #endregion
-
 
 #region health check
 @app.route("/health")
@@ -186,22 +185,26 @@ def health():
 @app.route('/chat/<room>/clear', methods=['GET', 'POST'])
 def clear_messages(room):
   """Clears all messages in the current room, except for the messages of the current user."""
-  return "hhhh"
   if not session.get("username"):
-        return redirect("/")
+    return redirect("/")
   filename = room_files_path + room + ".txt"
   with open(filename, "r") as f:
     messages = f.read().splitlines()
   f.close()
 
   # Get the current user ID.
-  user_id = session['username']
+  user_name = session['username']
 
   # Delete all messages from the current user.
+  messages_to_remove = []
+
   for message in messages:
-    if message.split(':')[0] == user_id:
-      messages.remove(message)
-  
+    if message.split(':')[0] == user_name:
+      messages_to_remove.append(message)
+
+  for message in messages_to_remove:
+    messages.remove(message)
+
   # Empty the file.
   os.remove(filename)
   # Write the updated messages to the file.
