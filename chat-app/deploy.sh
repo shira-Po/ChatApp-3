@@ -63,10 +63,10 @@ read -p "Do you want to push the image to Artifact Registry? (y/n) " push_to_art
 
 if [[ "$push_to_artifact_registry" == "y" ]]; then
   # Impersonate the artifact-admin-sa service account
-  gcloud auth activate-service-account artifact-admin-sa
-
-  # Push the image to Artifact Registry
-  docker push artifactregistry.googleapis.com/my-project/my-repository/my-chatapp:${version}
+  gcloud config set auth/impersonate_service_account artifact-admin-sa@grunitech-mid-project.iam.gserviceaccount.com
+  gcloud auth configure-docker me-west1-docker.pkg.dev
+  docker tag me-west1-docker.pkg.dev/grunitech-mid-project/shira-polak-chat-app-images/test:${version} me-west1-docker.pkg.dev/grunitech-mid-project/shira-polak-chat-app-images/test:${version}
+  docker push me-west1-docker.pkg.dev/grunitech-mid-project/shira-polak-chat-app-images/test:${version}
 fi
 
 echo "Done!"
