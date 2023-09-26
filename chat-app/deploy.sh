@@ -31,37 +31,34 @@ else
   docker build -t my-chatapp:${version} .
 fi
 
-# Check if the commit hash exists
-if docker image inspect my-chatapp:${commit_hash} > /dev/null 2>&1; then
-  # The commit hash exists
-  echo "The commit hash my-chatapp:${commit_hash} already exists."
-  read -p "Do you want to tag and push the image to GitHub? (y/n) " tag_and_push
-
-  if [[ "$tag_and_push" == "y" ]]; then
-    # Tag the Docker image with the commit hash
-    docker tag my-chatapp:${version} my-chatapp:${commit_hash}
-
-    # Push the Docker image to GitHub Container Registry
-    docker push my-chatapp:${commit_hash}
-
-    # Push to GitHub
-    git tag ${version}
-    git push origin ${version}
-  fi
-else
-  # The commit hash does not exist.
-  echo "The commit hash my-chatapp:${commit_hash} does not exist."
+# Check if the Docker build was successful
+if [ $? -ne 0 ]; then
+  echo "Docker build failed"
+  exit 1
 fi
 
-# Check if the user wants to push the image to Artifact Registry
-read -p "Do you want to push the image to Artifact Registry? (y/n) " push_to_artifact_registry
+# Push the Docker image to GitHub Container Registry
+echo "Pushing Docker image to GitHub Container Registry..."
+docker push my-chatapp:${version}
 
-if [[ "$push_to_artifact_registry" == "y" ]]; then
-  # Impersonate the artifact-admin-sa service account
-  gcloud auth activate-service-account artifact-admin-sa
+# Tag the Docker image with the commit hash
+docker tag my-chatapp:${version} my-chatapp:${commit_hash}
 
-  # Push the image to Artifact Registry
-  docker push artifactregistry.googleapis.com/my-project/my-repository/my-chatapp:${version}
+
+# Check if the Docker push was successful
+if [ $? -ne 0 ]; then
+  echo "Docker push failed"
+  exit 1
+fi
+
+# Push to GitHub
+git tag ${version}
+git push origin ${version}
+
+# Check if the Git push was successful
+if [ $? -ne 0 ]; then
+  echo "Git push failed"
+  exit 1
 fi
 
 echo "Done!"
