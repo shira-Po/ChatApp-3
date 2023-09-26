@@ -31,6 +31,12 @@ else
   docker build -t my-chatapp:${version} .
 fi
 
+# Check if the Docker build was successful
+if [ $? -ne 0 ]; then
+  echo "Docker build failed"
+  exit 1
+fi
+
 # Check if the commit hash exists
 if docker image inspect my-chatapp:${commit_hash} > /dev/null 2>&1; then
   # The commit hash exists
@@ -50,6 +56,17 @@ if docker image inspect my-chatapp:${commit_hash} > /dev/null 2>&1; then
 else
   # The commit hash does not exist
   echo "The commit hash my-chatapp:${commit_hash} does not exist."
+fi
+
+# Ask the user if they want to push the image to Artifact Registry
+read -p "Do you want to push the image to Artifact Registry? (y/n) " push_to_artifact_registry
+
+if [[ "$push_to_artifact_registry" == "y" ]]; then
+  # Impersonate the artifact-admin-sa service account
+  gcloud auth activate-service-account artifact-admin-sa
+
+  # Push the image to Artifact Registry
+  docker push artifactregistry.googleapis.com/my-project/my-repository/my-chatapp:${version}
 fi
 
 echo "Done!"
