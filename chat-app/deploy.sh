@@ -10,26 +10,8 @@ fi
 version=$1
 commit_hash=$2
 
-# Check if the Docker image exists
-if docker image inspect my-chatapp:${version} > /dev/null 2>&1; then
-  # The Docker image exists
-  echo "The Docker image my-chatapp:${version} already exists."
-  read -p "Do you want to rebuild the image? (y/n) " rebuild
-
-  if [[ "$rebuild" == "y" ]]; then
-    # Delete the existing Docker image
-    docker rmi my-chatapp:${version}
-
-    # Build the Docker image
-    docker build -t my-chatapp:${version} .
-  fi
-else
-  # The Docker image does not exist
-  echo "The Docker image my-chatapp:${version} does not exist."
-
-  # Build the Docker image
-  docker build -t my-chatapp:${version} .
-fi
+# Build the Docker image
+docker build -t my-chatapp:${version} .
 
 # Check if the Docker build was successful
 if [ $? -ne 0 ]; then
@@ -74,5 +56,3 @@ if [[ "$push_to_artifact_registry" == "y" ]]; then
   # Push the image to Artifact Registry
   docker push me-west1-docker.pkg.dev/grunitech-mid-project/shira-polak-chat-app-images:${version}
 fi
-
-echo "Done!"
